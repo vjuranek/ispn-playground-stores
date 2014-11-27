@@ -1,7 +1,9 @@
 package com.github.vjuranek.ispn.playground_stores;
 
 import org.infinispan.Cache;
+import org.infinispan.configuration.cache.Configuration;
 import org.infinispan.configuration.cache.ConfigurationBuilder;
+import org.infinispan.configuration.global.GlobalConfiguration;
 import org.infinispan.configuration.global.GlobalConfigurationBuilder;
 import org.infinispan.manager.DefaultCacheManager;
 import org.infinispan.persistence.leveldb.configuration.LevelDBStoreConfigurationBuilder;
@@ -16,7 +18,11 @@ public class PersistenceCacheEmbedded {
     }
 
     private static void testCacheStore(GlobalConfigurationBuilder gcb, ConfigurationBuilder cb) {
-        DefaultCacheManager cacheManager = new DefaultCacheManager(gcb.build(), cb.build());
+        testCacheStore(gcb.build(), cb.build());
+    }
+    
+    private static void testCacheStore(GlobalConfiguration gc, Configuration cc) {
+        DefaultCacheManager cacheManager = new DefaultCacheManager(gc, cc);
         Cache<String, String> cache = cacheManager.getCache();
 
         cache.put("k1", "value1");
@@ -48,9 +54,18 @@ public class PersistenceCacheEmbedded {
         cb.persistence().addSingleFileStore().location("/tmp/ispn_test_cache");
         testCacheStore(gcb, cb);
     }
+    
+    private static void testFileCacheStore() {
+        GlobalConfigurationBuilder gcb = GlobalConfigurationBuilder.defaultClusteredBuilder();
+        Configuration config = new ConfigurationBuilder()                                                                                                                                                                
+        .persistence().passivation(false)                                                                                              
+        .addSingleFileStore().location("/tmp").async().enable().threadPoolSize(20).build();
+        testCacheStore(gcb.build(), config);
+    }
 
     public static void main(String[] args) {
-        testSingleFileStore();
-        testLevelDB();
+        //testSingleFileStore();
+        //testLevelDB();
+        testFileCacheStore();
     }
 }
