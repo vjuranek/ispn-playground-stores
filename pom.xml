@@ -20,6 +20,18 @@
 			<artifactId>infinispan-embedded</artifactId>
 			<version>${version.org.infinispan}</version>
 		</dependency>
+		
+		<dependency>
+			<groupId>org.infinispan</groupId>
+			<artifactId>infinispan-cachestore-remote</artifactId>
+			<version>${version.org.infinispan}</version>
+		</dependency>
+		
+		<dependency>
+			<groupId>org.infinispan</groupId>
+			<artifactId>infinispan-persistence-cli</artifactId>
+			<version>${version.org.infinispan}</version>
+		</dependency>
 
 		<dependency>
 			<groupId>junit</groupId>
