@@ -10,6 +10,7 @@ import org.infinispan.configuration.global.GlobalConfigurationBuilder;
 import org.infinispan.manager.DefaultCacheManager;
 import org.infinispan.persistence.cloud.configuration.CloudStoreConfigurationBuilder;
 import org.jclouds.filesystem.reference.FilesystemConstants;
+import org.jclouds.openstack.keystone.v2_0.config.KeystoneProperties;
 
 public class CloudStoreTestEmbedded {
     
@@ -50,10 +51,17 @@ public class CloudStoreTestEmbedded {
     private static void testCloudStore() {
         ConfigurationBuilder builder = new ConfigurationBuilder();
         Properties props = new Properties();
-        props.put(FilesystemConstants.PROPERTY_BASEDIR, "test-dir");
+        //props.put(FilesystemConstants.PROPERTY_BASEDIR, "test-dir");
         
-        builder.persistence().passivation(false).addStore(CloudStoreConfigurationBuilder.class).provider("filesystem")
-        .location("test-location").identity("me").credential("notneeded").container("test-container").overrides(props).compress(true);
+        //builder.persistence().passivation(false).addStore(CloudStoreConfigurationBuilder.class).provider("filesystem")
+        //.location("US Standard").identity("me").credential("noneeded").container("jdg-cachestore").overrides(props);
+        
+        
+        props.put(KeystoneProperties.CREDENTIAL_TYPE, "tempAuthCredentials");
+
+        builder.persistence().passivation(false).addStore(CloudStoreConfigurationBuilder.class).provider("openstack-swift")
+            .location("test-location").identity("admin:admin").credential("admin").container("ispn").endpoint("http://10.3.8.195:8080/auth/v1.0/").overrides(props);
+        
         testCacheStore(builder);
     }
 
